@@ -1,0 +1,7 @@
+{
+  "name": "mealplanner-FE",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
