@@ -1,0 +1,23 @@
+<ion-content class="ion-padding ion-text-center">
+  <div class="header-section">
+    <div class="icon-box">🌿</div>
+    <h1>Nourish & Heal</h1>
+    <p>Sign in to access your plan</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input formControlName="email" type="email" placeholder="tester@gmail.com"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Password</ion-label>
+      <ion-input formControlName="password" type="password" placeholder="••••••••"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="loginForm.invalid" class="login-btn">
+      Sign In
+    </ion-button>
+  </form>
+</ion-content>

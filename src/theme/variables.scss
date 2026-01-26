@@ -1,2 +1,7 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+:root {
+  --ion-color-primary: #314a38;        /* Deep Green */
+  --ion-color-primary-rgb: 49,74,56;
+  --ion-color-secondary: #e4efe6;      /* Soft Sage */
+  --ion-color-tertiary: #f4976c;       /* Muted Orange for highlights/hearts */
+  --ion-background-color: #fdfaf4;     /* Warm Off-white */
+}

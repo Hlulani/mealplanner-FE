@@ -1,0 +1,36 @@
+// :host {
+//   display: block;
+//   width: 100%;
+// }
+
+// .app-card {
+//   cursor: pointer;
+//   position: relative;
+//   z-index: 1; /* Ensures it sits above other elements */
+//   --background: #ffffff; /* Explicitly set background */
+//   transition: transform 0.2s ease-in-out;
+
+//   &:active {
+//     transform: scale(0.98); /* Visual feedback when clicked */
+//   }
+// }
+
+:host {
+  display: block;
+  width: 100%;
+  pointer-events: auto;
+}
+
+.app-card {
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 9999;
+  position: relative;
+}
+
+.click-layer {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+

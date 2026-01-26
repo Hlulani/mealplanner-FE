@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ meal?.name || 'Meal Details' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="meal">
+  <ion-img
+    *ngIf="meal.imageUrl"
+    [src]="imageUrl(meal.imageUrl)"
+    class="detail-image">
+  </ion-img>
+
+  <div class="header-section">
+    <h1>{{ meal.name }}</h1>
+
+    <div class="stats-row">
+      <span class="app-chip">Anti-inf: {{ meal.antiInflammatoryScore }}/5</span>
+      <span class="app-chip">Iron: {{ meal.ironSupport }}/5</span>
+      <span class="app-chip">Fiber: {{ meal.fiberScore }}/5</span>
+    </div>
+  </div>
+
+  <ion-list *ngIf="meal.ingredients?.length">
+    <ion-item-divider>
+      <ion-label>Ingredients</ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let ing of meal.ingredients">
+      <ion-label>{{ ing.amount }} {{ ing.name }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="meal.instructions?.length" class="ion-padding-top">
+    <ion-item-divider>
+      <ion-label>Cooking Instructions</ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let step of meal.instructions; let i = index">
+      <ion-label>{{ i + 1 }}. {{ step }}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

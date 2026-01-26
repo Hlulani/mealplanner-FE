@@ -1,0 +1,20 @@
+<ion-card class="app-card" style="margin: 0;">
+  <div class="click-layer" (click)="goToDetails()">
+    <ion-img
+      [src]="imageUrl(meal.imageUrl)"
+      style="height: 160px; object-fit: cover;"
+    ></ion-img>
+
+    <ion-card-content>
+      <ion-text style="font-weight: 700; font-size: 16px;">
+        {{ meal.name }}
+      </ion-text>
+
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <span class="app-chip">Anti-inf: {{ meal.antiInflammatoryScore }}/5</span>
+        <span class="app-chip">Iron: {{ meal.ironSupport }}/5</span>
+        <span class="app-chip">Fiber: {{ meal.fiberScore }}/5</span>
+      </div>
+    </ion-card-content>
+  </div>
+</ion-card>

@@ -1,17 +1,32 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title>Nourish & Heal</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Nourish & Heal</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div class="ion-padding">
+    <h1 class="main-title">Your Recommendations</h1>
+
+    <div class="meal-grid">
+      @for (meal of meals(); track meal.id) {
+        <app-meal-card
+          [meal]="meal"
+          [apiBaseUrl]="baseUrl">
+        </app-meal-card>
+      }
+    </div>
+
+    @if (meals().length === 0) {
+      <div class="ion-text-center ion-padding">
+        <p>Finding the best meals for you...</p>
+      </div>
+    }
+  </div>
 </ion-content>

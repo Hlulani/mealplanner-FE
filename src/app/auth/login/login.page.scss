@@ -1,0 +1,22 @@
+.header-section {
+  margin: 60px 0 40px;
+  .icon-box { font-size: 48px; margin-bottom: 10px; }
+  h1 { color: #314a38; font-weight: 700; margin: 0; }
+  p { color: #6c7a6e; }
+}
+
+.custom-input {
+  --background: #fff;
+  border: 1px solid #d4e4d8;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  --padding-start: 12px;
+}
+
+.login-btn {
+  margin-top: 24px;
+  --background: #314a38;
+  --border-radius: 12px;
+  height: 52px;
+  font-weight: 600;
+}
