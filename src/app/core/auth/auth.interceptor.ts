@@ -1,27 +1,28 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
+
   const token = authService.getAccessToken();
 
-  console.log('Interceptor checking for token...');
+  // Don't attach token or trigger logout logic for auth endpoints
+  const isAuthRequest = req.url.includes('/api/v1/auth/');
+  const authReq = !isAuthRequest && token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
 
-  if (req.url.includes('/api/v1/auth/')) {
-    return next(req);
-  }
-
-  if (token) {
-    console.log('Token found! Attaching to request.');
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
+  return next(authReq).pipe(
+    catchError((err: unknown) => {
+      if (!isAuthRequest && err instanceof HttpErrorResponse && err.status === 401) {
+        authService.logout();
+        router.navigateByUrl('/login');
       }
-    });
-    return next(authReq);
-  }
-
-  console.warn('No token found for this request.');
-  return next(req);
+      return throwError(() => err);
+    })
+  );
 };

@@ -1,15 +1,15 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const token = localStorage.getItem('access_token');
+  const auth = inject(AuthService);
 
-  // Stricter check: ensure token exists and isn't just an empty string
-  if (token && token.length > 10) {
+  if (auth.hasValidToken()) {
     return true;
-  } else {
-    console.log('Guard blocked access - No valid token found');
-    return router.parseUrl('/login');
   }
+
+  console.log('Guard blocked access - No valid token found (or expired)');
+  return router.parseUrl('/login');
 };

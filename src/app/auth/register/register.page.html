@@ -1,13 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">register</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="ion-padding">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Create account</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-input
+            type="email"
+            (ionInput)="email.set($event.detail.value!)">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Password</ion-label>
+          <ion-input
+            type="password"
+            (ionInput)="password.set($event.detail.value!)">
+          </ion-input>
+        </ion-item>
+
+        <ion-text color="danger" *ngIf="error()">
+          <p>{{ error() }}</p>
+        </ion-text>
+
+        <ion-button expand="block" (click)="register()" [disabled]="isLoading()">
+          {{ isLoading() ? 'Creating account…' : 'Register' }}
+        </ion-button>
+
+        <div style="text-align:center; margin-top:12px;">
+          <a routerLink="/login">Already have an account?</a>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

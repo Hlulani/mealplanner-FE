@@ -21,6 +21,14 @@ export class ApiService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, { email, password });
   }
 
+  register(email: string, password: string) {
+  return this.http.post(
+    `${this.API_URL}/auth/register`,
+    { email, password }
+  );
+}
+
+
   getRecommended() {
     return this.http.get<MealResponse[]>(`${this.API_URL}/meals`);
   }

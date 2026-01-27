@@ -178,9 +178,9 @@ openMeal(mealId: string) {
     const token = this.authService.getAccessToken();
 
     if (!token) {
-      console.error('[MY PLAN] No access token found');
-      this.error.set('No access token found');
-      return;
+     console.error('[MY PLAN] No access token found');
+    this.router.navigateByUrl('/login');
+    return;
     }
 
     this.isLoading.set(true);

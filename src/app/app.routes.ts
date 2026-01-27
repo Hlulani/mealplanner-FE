@@ -33,5 +33,9 @@ export const routes: Routes = [
   },
 
   { path: '**', redirectTo: 'login' },
+  {
+    path: 'auth-shell',
+    loadComponent: () => import('./pages/auth/auth-shell.page').then( m => m.AuthShellPage)
+  },
 ];
 
