@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth-guard';
+import { AuthShellPage } from './auth/auth-shell.page';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: 'tabs/tab1', pathMatch: 'full' },
+    { path: 'auth', component: AuthShellPage },
 
   {
     path: 'login',
@@ -35,7 +38,7 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'login' },
   {
     path: 'auth-shell',
-    loadComponent: () => import('./pages/auth/auth-shell.page').then( m => m.AuthShellPage)
+    loadComponent: () => import('./auth/auth-shell.page').then( m => m.AuthShellPage)
   },
 ];
 

@@ -1,0 +1,27 @@
+<ion-content [fullscreen]="true">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h1 class="title">Join Nourish &amp; Heal</h1>
+      <p class="subtitle">Start your journey to better health</p>
+
+      <ion-segment (ionChange)="setMode(($event.detail.value ?? '') + '')">
+        <ion-segment-button value="register">
+          <ion-label>Register</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="login">
+          <ion-label>Login</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div class="form-area">
+        <ng-container *ngIf="mode() === 'register'; else login">
+          <app-register-form *ngIf="mode() === 'register'"></app-register-form>
+        </ng-container>
+
+        <ng-template #login>
+        <app-login-form *ngIf="mode() === 'login'"></app-login-form>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ion-content>
