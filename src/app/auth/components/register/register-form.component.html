@@ -1,25 +1,20 @@
-<ion-item>
-  <ion-label position="stacked">Email</ion-label>
-  <ion-input
-    type="email"
-    [value]="email()"
-    (ionInput)="email.set(onIonTextInput($event))"
-  ></ion-input>
-</ion-item>
+<div class="input-group">
+  <ion-item lines="none" class="custom-input">
+    <ion-icon name="mail-outline" slot="start"></ion-icon>
+    <ion-input [(ngModel)]="email" name="email" type="email" placeholder="Email Address"></ion-input>
+  </ion-item>
 
-<ion-item>
-  <ion-label position="stacked">Password</ion-label>
-  <ion-input
-    type="password"
-    [value]="password()"
-    (ionInput)="password.set(onIonTextInput($event))"
-  ></ion-input>
-</ion-item>
+  <ion-item lines="none" class="custom-input ion-margin-top">
+    <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+    <ion-input [(ngModel)]="password" name="password" type="password" placeholder="Password"></ion-input>
+  </ion-item>
+</div>
 
-<ion-button expand="block" (click)="submit()" [disabled]="isLoading()">
-  Create account
+<ion-button expand="block" (click)="submit()" [disabled]="isLoading()" class="main-submit-btn">
+  <span *ngIf="!isLoading()">Create Account</span>
+  <ion-spinner *ngIf="isLoading()" name="crescent"></ion-spinner>
 </ion-button>
 
 <ion-text color="danger" *ngIf="error()">
-  <p>{{ error() }}</p>
+  <p class="error-text">{{ error() }}</p>
 </ion-text>

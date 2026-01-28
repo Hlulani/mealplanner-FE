@@ -5,13 +5,23 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
+  IonIcon,
+  IonButton
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  leafOutline,
+  restaurantOutline,
+  logoGoogle,
+  logoApple,
+  mailOutline,
+  lockClosedOutline
+} from 'ionicons/icons';
 
 import { RegisterFormComponent } from './components/register/register-form.component';
 import { LoginFormComponent } from './components/login/login-form.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
-
 
 @Component({
   selector: 'app-auth-shell',
@@ -22,13 +32,14 @@ import { AuthService } from '../core/auth/auth.service';
     IonSegment,
     IonSegmentButton,
     IonLabel,
+    IonIcon,
+    IonButton,
     RegisterFormComponent,
     LoginFormComponent,
   ],
   templateUrl: './auth-shell.page.html',
   styleUrls: ['./auth-shell.page.scss'],
 })
-
 export class AuthShellPage {
   private router = inject(Router);
   private auth = inject(AuthService);
@@ -36,6 +47,15 @@ export class AuthShellPage {
   mode = signal<'register' | 'login'>('register');
 
   constructor() {
+    addIcons({
+      leafOutline,
+      restaurantOutline,
+      logoGoogle,
+      logoApple,
+      mailOutline,
+      lockClosedOutline
+    });
+
     effect(() => {
       const token = this.auth.getAccessToken();
       if (token && token.length > 10) {
@@ -48,5 +68,3 @@ export class AuthShellPage {
     if (value === 'register' || value === 'login') this.mode.set(value);
   }
 }
-
-

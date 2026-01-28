@@ -1,28 +1,31 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonText,
+  IonIcon,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { ApiService } from '../../../core/services/api.service';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-register-form',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     IonText,
+    IonIcon,
+    IonSpinner
   ],
   templateUrl: './register-form.component.html',
   styleUrls: ['./register-form.component.scss'],
@@ -32,39 +35,29 @@ export class RegisterFormComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
 
-  email = signal('');
-  password = signal('');
+  email = '';
+  password = '';
+  mode = 'register';
 
   isLoading = signal(false);
   error = signal<string | null>(null);
 
-  onIonTextInput(ev: any): string {
-    const v = ev?.detail?.value;
-    return v == null ? '' : String(v);
-  }
-
   submit() {
-    if (!this.email() || !this.password()) return;
+    if (!this.email || !this.password) return;
 
     this.isLoading.set(true);
     this.error.set(null);
 
-    const email = this.email();
-    const password = this.password();
-
-    this.api.register(email, password).pipe(
-      switchMap(() => this.auth.login(email, password)) // auto-login after register
+    this.api.register(this.email, this.password).pipe(
+      switchMap(() => this.auth.login(this.email, this.password))
     ).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigateByUrl('/tabs'); // or whatever your “app home” route is
+        this.router.navigateByUrl('/tabs/tab1');
       },
       error: (err) => {
         this.isLoading.set(false);
-        const msg =
-          err?.error?.message ||
-          err?.error ||
-          'Registration/login failed';
+        const msg = err?.error?.message || 'Registration failed';
         this.error.set(String(msg));
       },
     });

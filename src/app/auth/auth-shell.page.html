@@ -1,10 +1,16 @@
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="auth-page">
   <div class="auth-wrap">
     <div class="auth-card">
-      <h1 class="title">Join Nourish &amp; Heal</h1>
-      <p class="subtitle">Start your journey to better health</p>
+      <div class="brand-header ion-text-center">
+        <div class="logo-container">
+          <ion-icon name="leaf-outline" style="color: #92d075; font-size: 48px;"></ion-icon>
+          <ion-icon name="restaurant-outline" style="color: #59ad9b; font-size: 48px; margin-left: -10px;"></ion-icon>
+        </div>
+        <h1 class="title">Join Nourish &amp; Heal</h1>
+        <p class="subtitle">Start your journey to better health</p>
+      </div>
 
-      <ion-segment (ionChange)="setMode(($event.detail.value ?? '') + '')">
+      <ion-segment [value]="mode()" (ionChange)="setMode(($event.detail.value ?? '') + '')" mode="ios">
         <ion-segment-button value="register">
           <ion-label>Register</ion-label>
         </ion-segment-button>
@@ -14,14 +20,37 @@
       </ion-segment>
 
       <div class="form-area">
-        <ng-container *ngIf="mode() === 'register'; else login">
-          <app-register-form *ngIf="mode() === 'register'"></app-register-form>
-        </ng-container>
-
-        <ng-template #login>
+        <app-register-form *ngIf="mode() === 'register'"></app-register-form>
         <app-login-form *ngIf="mode() === 'login'"></app-login-form>
-        </ng-template>
       </div>
-    </div>
-  </div>
-</ion-content>
+
+      <div class="social-divider">
+        <span>OR</span>
+      </div>
+
+      <div class="social-buttons">
+        <ion-button fill="outline" expand="block" class="google-btn">
+          <ion-icon slot="start" name="logo-google"></ion-icon>
+          Continue with Google
+        </ion-button>
+        <ion-button fill="outline" expand="block" class="apple-btn">
+          <ion-icon slot="start" name="logo-apple"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="auth-footer ion-margin-top ion-text-center">
+        <p *ngIf="mode() === 'register'">
+          Already have an account?
+          <ion-button fill="outline" (click)="setMode('login')" class="footer-link-btn">
+            Login
+          </ion-button>
+        </p>
+
+        <p *ngIf="mode() === 'login'">
+          New to Nourish &amp; Heal?
+          <ion-button fill="outline" (click)="setMode('register')" class="footer-link-btn">
+            Register
+          </ion-button>
+        </p>
+      </div>
+      </div> </div> </ion-content>
