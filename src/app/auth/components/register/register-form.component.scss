@@ -14,5 +14,49 @@
 }
 
 .custom-input {
-  margin-bottom: 16px; /* Space between Email and Password fields */
+
+  ion-icon[slot="start"] {
+    margin-right: 12px;
+    font-size: 20px;
+    color: #636e72;
+  }
+
+  ion-icon[slot="end"] {
+    cursor: pointer;
+    color: #b2bec3;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+
+
+.strength-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 24px 4px;
+  font-size: 13px;
+  color: #636e72;
+
+  .meter-bar {
+    width: 14px;
+    height: 4px;
+    background: #92d075;
+    border-radius: 2px;
+  }
+
+  strong {
+    color: #59ad9b;
+    font-weight: 700;
+  }
+}
+
+.error-text {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
 }

@@ -15,7 +15,9 @@ import {
   logoGoogle,
   logoApple,
   mailOutline,
-  lockClosedOutline
+  lockClosedOutline,
+removeOutline,
+  eyeOutline
 } from 'ionicons/icons';
 
 import { RegisterFormComponent } from './components/register/register-form.component';
@@ -53,7 +55,9 @@ export class AuthShellPage {
       logoGoogle,
       logoApple,
       mailOutline,
-      lockClosedOutline
+      lockClosedOutline,
+      removeOutline,
+      eyeOutline
     });
 
     effect(() => {

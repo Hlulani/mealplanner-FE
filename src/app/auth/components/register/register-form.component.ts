@@ -37,13 +37,24 @@ export class RegisterFormComponent {
 
   email = '';
   password = '';
+  confirmPassword = '';
   mode = 'register';
 
   isLoading = signal(false);
   error = signal<string | null>(null);
+  isPasswordVisible = signal(false);
 
   submit() {
-    if (!this.email || !this.password) return;
+    // 2. Added validation check
+    if (!this.email || !this.password || !this.confirmPassword) {
+      this.error.set('Please fill in all fields');
+      return;
+    }
+
+    if (this.password !== this.confirmPassword) {
+      this.error.set('Passwords do not match');
+      return;
+    }
 
     this.isLoading.set(true);
     this.error.set(null);
@@ -61,5 +72,9 @@ export class RegisterFormComponent {
         this.error.set(String(msg));
       },
     });
+  }
+
+togglePasswordVisibility() {
+    this.isPasswordVisible.set(!this.isPasswordVisible());
   }
 }
