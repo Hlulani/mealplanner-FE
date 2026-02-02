@@ -21,9 +21,13 @@ import {
   IonList,
   IonSegment,
   IonSegmentButton,
-  IonItemDivider,
   IonAccordionGroup,
-IonAccordion,
+  IonAccordion,
+  IonModal,
+  IonListHeader,
+  IonAvatar,
+  IonButtons,
+  IonDatetime,
 
 } from '@ionic/angular/standalone';
 
@@ -31,6 +35,7 @@ import { MealPlansService } from '../core/services/meal-plans.service';
 import { AuthService } from '../core/auth/auth.service';
 import { Duration, GenerateMealPlanRequest } from '../core/services/meal-plans.service';
 import { Router } from '@angular/router';
+import { PlanStoreService } from '../core/services/plan-store.service';
 
 
 type PlanDuration = 7 | 14 | 30;
@@ -50,6 +55,13 @@ type MealPlanDay = {
 type MealPlanResponse = {
   days: number;
   daysPlan: MealPlanDay[];
+};
+
+type SwapOption = {
+  id: string;
+  name: string;
+  imageUrl?: string | null;
+  meta?: string;
 };
 
 @Component({
@@ -78,9 +90,13 @@ type MealPlanResponse = {
     IonList,
     IonSegment,
     IonSegmentButton,
-    IonItemDivider,
     IonAccordionGroup,
     IonAccordion,
+    IonModal,
+    IonListHeader,
+    IonAvatar,
+    IonButtons,
+    IonDatetime,
 
   ],
 })
@@ -91,6 +107,7 @@ export class Tab2Page {
   private mealPlansService = inject(MealPlansService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private planStore = inject(PlanStoreService);
   private todayLocalYYYYMMDD(): string {
   const d = new Date();
   const yyyy = d.getFullYear();
@@ -99,7 +116,113 @@ export class Tab2Page {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+  private parseLocalDate(dateStr: string | null | undefined): Date | null {
+    if (!dateStr) return null;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length !== 3) return null;
+    const [y, m, d] = parts;
+    if (!y || !m || !d) return null;
+    return new Date(y, m - 1, d);
+  }
+
+  private formatDate(dateStr: string, options: Intl.DateTimeFormatOptions): string {
+    const d = this.parseLocalDate(dateStr);
+    if (!d || Number.isNaN(d.getTime())) return dateStr;
+    return new Intl.DateTimeFormat('en-US', options).format(d);
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const next = new Date(date);
+    next.setDate(next.getDate() + days);
+    return next;
+  }
+
   fullPlanOpen = signal<boolean>(false);
+  swapModalOpen = signal<boolean>(false);
+  swapMeal = signal<MealPlanMeal | null>(null);
+  swapOptions = signal<SwapOption[]>([]);
+  startDatePickerOpen = signal<boolean>(false);
+  startDateISO = signal<string | null>(null);
+
+  openSwap(meal: MealPlanMeal) {
+    this.swapMeal.set(meal);
+    this.swapOptions.set(this.getSwapOptions(meal));
+    this.swapModalOpen.set(true);
+  }
+
+  closeSwap() {
+    this.swapModalOpen.set(false);
+  }
+
+  openStartDatePicker() {
+    this.startDatePickerOpen.set(true);
+  }
+
+  closeStartDatePicker() {
+    this.startDatePickerOpen.set(false);
+  }
+
+  onStartDateChange(value: string | string[] | null | undefined) {
+    if (!value) return;
+    const raw = Array.isArray(value) ? value[0] : value;
+    if (!raw) return;
+    const dateOnly = raw.split('T')[0];
+    if (dateOnly) this.startDateISO.set(dateOnly);
+  }
+
+  applySwap(option: SwapOption) {
+    const current = this.swapMeal();
+    if (!current) return;
+
+    const plan = this.plan();
+    if (!plan) return;
+
+    const updated: MealPlanResponse = {
+      ...plan,
+      daysPlan: plan.daysPlan.map((day) => ({
+        ...day,
+        meals: day.meals.map((meal) => {
+          if (meal.mealId !== current.mealId) return meal;
+          return {
+            ...meal,
+            mealId: option.id,
+            name: option.name,
+            imageUrl: option.imageUrl ?? meal.imageUrl ?? null,
+          };
+        }),
+      })),
+    };
+
+    this.plan.set(updated);
+    this.closeSwap();
+  }
+
+  private getSwapOptions(meal: MealPlanMeal): SwapOption[] {
+    const base: Record<MealPlanMeal['mealType'], SwapOption[]> = {
+      BREAKFAST: [
+        { id: 'alt-b1', name: 'Herbed Sweet Potato Hash', meta: 'Similar macros · 25 min' },
+        { id: 'alt-b2', name: 'Green Apple Chia Bowl', meta: 'Light + fiber · 15 min' },
+        { id: 'alt-b3', name: 'Turmeric Oats', meta: 'Anti-inflammatory · 10 min' },
+      ],
+      LUNCH: [
+        { id: 'alt-l1', name: 'Ginger Lentil Bowl', meta: 'Anti-inflammatory · 30 min' },
+        { id: 'alt-l2', name: 'Roasted Veggie Salad', meta: 'High fiber · 20 min' },
+        { id: 'alt-l3', name: 'Avocado Quinoa Plate', meta: 'Balanced · 25 min' },
+      ],
+      DINNER: [
+        { id: 'alt-d1', name: 'Citrus Herb Chicken', meta: 'Protein-forward · 35 min' },
+        { id: 'alt-d2', name: 'Miso Salmon + Greens', meta: 'Omega-3 · 30 min' },
+        { id: 'alt-d3', name: 'Zucchini Noodle Bowl', meta: 'Low bloat · 25 min' },
+      ],
+      SNACK: [
+        { id: 'alt-s1', name: 'Berry Yogurt Cup', meta: 'Quick · 5 min' },
+        { id: 'alt-s2', name: 'Apple + Nut Butter', meta: 'Fiber · 5 min' },
+        { id: 'alt-s3', name: 'Seed Mix', meta: 'Hormone support · 2 min' },
+      ],
+    };
+
+    return base[meal.mealType] ?? base.LUNCH;
+  }
 
 toggleFullPlan() {
   this.fullPlanOpen.update(v => !v);
@@ -135,7 +258,6 @@ openMeal(mealId: string) {
   isLoading = signal(false);
   error = signal<string | null>(null);
 
-  mealPlanResponse = signal<any | null>(null);
 
   setDuration(value: string | number | undefined | null) {
     if (value === undefined || value === null) return;
@@ -170,6 +292,104 @@ openMeal(mealId: string) {
     return p.daysPlan.find((d) => d.date === key) ?? null;
   }
 
+  planStartDate(): string {
+    const manualStart = this.startDateISO();
+    if (manualStart) return manualStart;
+    const p = this.plan();
+    if (p?.daysPlan?.length) return p.daysPlan[0].date;
+    return this.todayLocalYYYYMMDD();
+  }
+
+  planEndDate(): string {
+    const p = this.plan();
+    if (!this.startDateISO() && p?.daysPlan?.length) return p.daysPlan[p.daysPlan.length - 1].date;
+    const start = this.parseLocalDate(this.planStartDate());
+    if (!start) return this.planStartDate();
+    return this.formatDateISO(this.addDays(start, this.duration() - 1));
+  }
+
+  private formatDateISO(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  planRangeLabel(): string {
+    const start = this.planStartDate();
+    const end = this.planEndDate();
+    const startLabel = this.formatDate(start, { month: 'short', day: 'numeric' });
+    const endLabel = this.formatDate(end, { month: 'short', day: 'numeric' });
+    return `${startLabel} - ${endLabel}`;
+  }
+
+  planStartDayLabel(): string {
+    const start = this.planStartDate();
+    const today = this.todayLocalYYYYMMDD();
+    const tomorrow = this.formatDateISO(this.addDays(this.parseLocalDate(today) ?? new Date(), 1));
+    if (start === today) return 'Today';
+    if (start === tomorrow) return 'Tomorrow';
+    return this.formatDate(start, { weekday: 'long' });
+  }
+
+  planStartDateLabel(): string {
+    return this.formatDate(this.planStartDate(), { month: 'short', day: 'numeric' });
+  }
+
+  planEndDayLabel(): string {
+    return this.formatDate(this.planEndDate(), { weekday: 'long' });
+  }
+
+  planEndDateLabel(): string {
+    return this.formatDate(this.planEndDate(), { month: 'short', day: 'numeric' });
+  }
+
+  formatDayTitle(dateStr: string): string {
+    return this.formatDate(dateStr, { weekday: 'long', month: 'short', day: 'numeric' });
+  }
+
+  durationLabel(): string {
+    const d = this.duration();
+    if (d === 7) return '7-day plan';
+    if (d === 14) return '14-day plan';
+    return '30-day plan';
+  }
+
+  focusTagLabel(): string {
+    if (this.ironSupport()) return 'Iron support';
+    if (this.fibroidFocus()) return 'Fibroid support';
+    return 'Balanced support';
+  }
+
+  mealTypeLabel(type: MealPlanMeal['mealType']): string {
+    switch (type) {
+      case 'BREAKFAST':
+        return 'Breakfast';
+      case 'LUNCH':
+        return 'Lunch';
+      case 'DINNER':
+        return 'Dinner';
+      case 'SNACK':
+        return 'Snack';
+      default:
+        return type;
+    }
+  }
+
+  mealTypeClass(type: MealPlanMeal['mealType']): string {
+    switch (type) {
+      case 'BREAKFAST':
+        return 'chip chip-breakfast';
+      case 'LUNCH':
+        return 'chip chip-lunch';
+      case 'DINNER':
+        return 'chip chip-dinner';
+      case 'SNACK':
+        return 'chip chip-snack';
+      default:
+        return 'chip';
+    }
+  }
   allDays(): MealPlanDay[] {
     return this.plan()?.daysPlan ?? [];
   }
@@ -179,7 +399,7 @@ openMeal(mealId: string) {
 
     if (!token) {
      console.error('[MY PLAN] No access token found');
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl('/auth');
     return;
     }
 
@@ -206,8 +426,7 @@ openMeal(mealId: string) {
         console.log('[MY PLAN] response', res);
 
         this.plan.set(res as MealPlanResponse);
-
-        this.mealPlanResponse.set(res);
+        this.planStore.setPlan(res as MealPlanResponse);
 
         console.log(
           '[MY PLAN] todayKey',
@@ -231,8 +450,8 @@ openMealDetails(mealId: string) {
   this.router.navigate(['/meal-details', mealId]);
 }
 
-shouldShowStartNotice() {
-  const plan = this.mealPlanResponse();
+  shouldShowStartNotice() {
+  const plan = this.plan();
   if (!plan || !plan.daysPlan?.length) return false;
 
   const today = new Date().toISOString().slice(0, 10);

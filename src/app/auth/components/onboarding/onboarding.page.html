@@ -1,0 +1,151 @@
+<ion-content [fullscreen]="true" class="gray-bg">
+
+  <div class="progress-wrap ion-padding">
+    <div class="progress-track">
+      <div class="progress-fill" [style.width]="(currentStep() / totalSteps * 100) + '%'"></div>
+    </div>
+    <ion-button fill="clear" color="dark" (click)="prevStep()" *ngIf="currentStep() > 1">
+      <ion-icon name="chevron-back-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </div>
+
+  <div *ngIf="currentStep() === 1" class="step-view animate-fade">
+    <h1 class="title">What are you trying to achieve?</h1>
+    <p class="subtitle">Pick your primary health focus.</p>
+
+   <div class="card-grid">
+  <div class="image-card" (click)="selectGoal('fibroid')">
+    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500" />
+    <div class="overlay">
+      <h3>🌸 Fibroid Support</h3>
+      <p>Balance estrogen naturally</p>
+    </div>
+  </div>
+
+  <div class="image-card" (click)="selectGoal('inflammation')">
+    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500" />
+    <div class="overlay">
+      <h3>🔥 Heal Inflammation</h3>
+      <p>Reduce pain and bloating</p>
+    </div>
+  </div>
+
+  <div class="image-card" (click)="selectGoal('iron')">
+    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500" />
+    <div class="overlay">
+      <h3>⚡ Iron & Energy</h3>
+      <p>Beat fatigue and anemia</p>
+    </div>
+  </div>
+</div>
+  </div>
+
+ <!-- STEP 2: Focuses (multi-select) -->
+<div class="step-view animate-fade" *ngIf="currentStep() === 2">
+  <div class="title">What should we focus on?</div>
+  <div class="subtitle">Pick as many as you want… you can change this later.</div>
+
+  <ion-list lines="none">
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('anti_inflammatory')">
+      <ion-checkbox slot="start" [checked]="hasFocus('anti_inflammatory')"></ion-checkbox>
+      <ion-label>🌿 Anti-inflammatory meals</ion-label>
+    </ion-item>
+
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('high_fiber')">
+      <ion-checkbox slot="start" [checked]="hasFocus('high_fiber')"></ion-checkbox>
+      <ion-label>🥬 Higher fiber (gentle)</ion-label>
+    </ion-item>
+
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('iron_support')">
+      <ion-checkbox slot="start" [checked]="hasFocus('iron_support')"></ion-checkbox>
+      <ion-label>🩸 Iron support</ion-label>
+    </ion-item>
+
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('low_bloat')">
+      <ion-checkbox slot="start" [checked]="hasFocus('low_bloat')"></ion-checkbox>
+      <ion-label>🫶 Low-bloat meals</ion-label>
+    </ion-item>
+
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('blood_sugar')">
+      <ion-checkbox slot="start" [checked]="hasFocus('blood_sugar')"></ion-checkbox>
+      <ion-label>⚖️ Blood sugar stable meals</ion-label>
+    </ion-item>
+
+    <ion-item button detail="false" class="pill-item" (click)="toggleFocus('quick_meals')">
+      <ion-checkbox slot="start" [checked]="hasFocus('quick_meals')"></ion-checkbox>
+      <ion-label>⏱️ Quick meals</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button
+    expand="block"
+    class="main-submit-btn"
+    [disabled]="!canContinueFromFocuses()"
+    (click)="nextStep()"
+  >
+    Continue
+  </ion-button>
+</div>
+
+
+<div *ngIf="currentStep() === 3" class="step-view animate-fade">
+  <div class="header-section">
+    <h1 class="title">How your meals are thoughtfully chosen</h1>
+    <p class="subtitle">How your personalized plan supports your body’s natural balance.</p>
+  </div>.
+
+  <div class="science-card" *ngFor="let card of getScienceCards()">
+    <div class="card-media">
+      <img [src]="card.image" [alt]="card.alt">
+    </div>
+    <div class="card-body">
+      <div class="tag">{{ card.tag }}</div>
+      <h3>{{ card.title }}</h3>
+      <p>{{ card.body }}</p>
+    </div>
+  </div>
+
+  <div class="footer-btn">
+    <ion-button expand="block" class="main-submit-btn" (click)="nextStep()">
+      I understand the approach
+    </ion-button>
+  </div>
+</div>
+
+ <!-- STEP 4: Your approach summary -->
+<div class="step-view animate-fade" *ngIf="currentStep() === 4">
+  <div class="title">{{ getApproachTitle() }}</div>
+  <div class="subtitle">Here’s what we’ll prioritize for your first plan.</div>
+
+  <div class="science-card">
+    <div class="card-body">
+      <div class="tag">Your focus</div>
+
+      <div style="display:flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+        <ion-chip *ngFor="let chip of getSelectedFocusChips()">
+          <ion-label>{{ chip }}</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="getSelectedFocusChips().length === 0">
+          <ion-label>General</ion-label>
+        </ion-chip>
+      </div>
+
+      <ion-list lines="none">
+        <ion-item *ngFor="let b of getApproachBullets()" class="pill-item" detail="false">
+          <ion-label>{{ b }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+
+  <ion-button expand="block" class="main-submit-btn" (click)="finish()">
+    Start planning
+  </ion-button>
+
+  <ion-button expand="block" fill="clear" (click)="prevStep()">
+    Back
+  </ion-button>
+</div>
+
+
+</ion-content>

@@ -16,14 +16,16 @@ import {
   logoApple,
   mailOutline,
   lockClosedOutline,
-removeOutline,
-  eyeOutline
+  removeOutline,
+  eyeOutline,
+  eyeOffOutline
 } from 'ionicons/icons';
 
 import { RegisterFormComponent } from './components/register/register-form.component';
 import { LoginFormComponent } from './components/login/login-form.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-auth-shell',
@@ -57,12 +59,13 @@ export class AuthShellPage {
       mailOutline,
       lockClosedOutline,
       removeOutline,
-      eyeOutline
+      eyeOutline,
+      eyeOffOutline
     });
 
     effect(() => {
       const token = this.auth.getAccessToken();
-      if (token && token.length > 10) {
+      if (token && token.length > 10 && !environment.forceAuthOnStart) {
         this.router.navigateByUrl('/tabs/tab1');
       }
     });

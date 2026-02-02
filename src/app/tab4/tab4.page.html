@@ -1,0 +1,167 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <span class="title-with-icon">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        Community
+      </span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="community-page">
+    <div class="top-row">
+      <ion-avatar class="profile-avatar">
+        <img src="assets/icon/profile.jpg" alt="Profile" />
+      </ion-avatar>
+      <ion-searchbar placeholder="Search community" class="search"></ion-searchbar>
+      <ion-button fill="clear" class="icon-btn">
+        <ion-icon name="notifications-outline"></ion-icon>
+      </ion-button>
+    </div>
+
+    <ion-segment [(ngModel)]="segmentValue" value="popular" class="segmented">
+      <ion-segment-button value="popular">
+        <ion-label>Popular</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="posts">
+        <ion-label>My posts</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="saved">
+        <ion-label>Saved</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="new-post-inline">
+      <ion-button class="new-post-btn" (click)="openNewPost()">
+        <ion-icon name="add"></ion-icon>
+        New post
+      </ion-button>
+    </div>
+
+    <div class="feed">
+      <ion-card class="post-card" *ngFor="let post of posts">
+        <ion-card-content>
+          <div class="post-header">
+            <ion-avatar class="post-avatar">
+              <img [src]="post.avatarUrl" alt="User" />
+            </ion-avatar>
+            <div class="post-meta">
+              <div class="post-name">{{ post.author }}</div>
+              <div class="post-time">{{ post.time }}</div>
+            </div>
+            <ion-button fill="clear" class="icon-btn">
+              <ion-icon name="ellipsis-horizontal"></ion-icon>
+            </ion-button>
+          </div>
+          <div class="post-body">
+            {{ post.body }}
+          </div>
+          <ion-img *ngIf="post.imageUrl" [src]="post.imageUrl" class="post-image"></ion-img>
+          <ion-chip class="topic-chip">{{ post.topic }}</ion-chip>
+          <div class="post-actions">
+            <ion-button
+              fill="clear"
+              class="action-btn action-like"
+              [class.active]="post.liked"
+              (click)="toggleLike(post)"
+            >
+              <img class="action-icon" src="assets/icon/like.png" alt="Like" />
+              <span class="action-count">{{ post.likes }}</span>
+            </ion-button>
+            <ion-button fill="clear" class="action-btn action-comment" (click)="openComments(post)">
+              <img class="action-icon" src="assets/icon/comment.png" alt="Comment" />
+              <span class="action-count">{{ post.comments.length }}</span>
+            </ion-button>
+            <ion-button fill="clear" class="action-btn">
+              <ion-icon name="paper-plane-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" class="action-btn" (click)="toggleBookmark(post)">
+              <ion-icon [name]="post.bookmarked ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="category-header">
+      <h2>Categories</h2>
+      <ion-button fill="clear" class="see-all">See all</ion-button>
+    </div>
+
+    <div class="category-grid">
+      <div class="category-card">
+        <div class="category-img warm"></div>
+        <div class="category-label">Anti-Inflammation</div>
+      </div>
+      <div class="category-card">
+        <div class="category-img cool"></div>
+        <div class="category-label">Fibroids Chat</div>
+      </div>
+      <div class="category-card">
+        <div class="category-img gold"></div>
+        <div class="category-label">Meal Prep</div>
+      </div>
+    </div>
+
+  </div>
+
+  <ion-modal [isOpen]="newPostOpen" (didDismiss)="closeNewPost()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>New post</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeNewPost()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="new-post-modal">
+        <ion-input
+          placeholder="Topic (optional)"
+          [(ngModel)]="newPostTopic"
+        ></ion-input>
+        <ion-textarea
+          placeholder="Share with the community..."
+          autoGrow="true"
+          [(ngModel)]="newPostText"
+        ></ion-textarea>
+        <div class="upload-row">
+          <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+        </div>
+        <ion-img *ngIf="newPostImageUrl" [src]="newPostImageUrl" class="post-image preview"></ion-img>
+        <ion-button expand="block" (click)="submitPost()">Post</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal [isOpen]="commentsOpen" (didDismiss)="closeComments()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Comments</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeComments()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="comments-modal">
+        <div class="comment-card" *ngFor="let c of activePost?.comments">
+          <div class="comment-author">{{ c.author }}</div>
+          <div class="comment-text">{{ c.text }}</div>
+          <div class="comment-time">{{ c.time }}</div>
+        </div>
+
+        <div class="comment-input">
+          <ion-textarea
+            placeholder="Add a comment..."
+            autoGrow="true"
+            [(ngModel)]="newCommentText"
+          ></ion-textarea>
+          <ion-button expand="block" (click)="addComment()">Send</ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

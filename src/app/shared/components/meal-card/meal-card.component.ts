@@ -42,4 +42,10 @@ goToDetails() {
   console.log('[MealCard] goToDetails', this.meal.id);
   this.router.navigate(['/meal-details', this.meal.id]);
 }
+
+scoreClass(score: number): string {
+  if (score >= 4) return 'score-chip score-high';
+  if (score >= 2) return 'score-chip score-med';
+  return 'score-chip score-low';
+}
 }

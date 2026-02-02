@@ -33,4 +33,31 @@
   cursor: pointer;
 }
 
+.score-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.score-high {
+  background: #e6f3df;
+  color: #2f6f4f;
+  border-color: #cfe7c1;
+}
+
+.score-med {
+  background: #fff1cc;
+  color: #7a5a00;
+  border-color: #f1dfaa;
+}
+
+.score-low {
+  background: #ffe3dd;
+  color: #7a2e1a;
+  border-color: #f6c6bb;
+}
 

@@ -6,6 +6,7 @@ import { tap } from 'rxjs';
 export class AuthService {
   private api = inject(ApiService);
   private readonly TOKEN_KEY = 'access_token';
+  private readonly ONBOARDING_KEY = 'onboarding_completed';
 
   login(email: string, password: string) {
     return this.api.login(email, password).pipe(
@@ -17,6 +18,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.ONBOARDING_KEY);
   }
 
   getAccessToken(): string | null {
@@ -35,6 +37,13 @@ export class AuthService {
     return exp > nowSeconds;
   }
 
+  hasCompletedOnboarding(): boolean {
+    return localStorage.getItem(this.ONBOARDING_KEY) === 'true';
+  }
+
+  setOnboardingCompleted(completed = true): void {
+    localStorage.setItem(this.ONBOARDING_KEY, completed ? 'true' : 'false');
+  }
 
 
 register(email: string, password: string) {

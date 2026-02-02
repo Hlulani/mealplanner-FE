@@ -64,7 +64,7 @@ export class RegisterFormComponent {
     ).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigateByUrl('/tabs/tab1');
+        this.router.navigateByUrl('/onboarding');
       },
       error: (err) => {
         this.isLoading.set(false);

@@ -8,7 +8,7 @@ import {
   IonRouterOutlet
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { homeOutline, calendarOutline, restaurantOutline } from 'ionicons/icons';
+import { homeOutline, calendarOutline, cartOutline, chatbubblesOutline } from 'ionicons/icons';
 import { RouterOutlet } from '@angular/router';
 
 
@@ -29,6 +29,6 @@ import { RouterOutlet } from '@angular/router';
 export class TabsPage {
 
   constructor() {
-    addIcons({ homeOutline, calendarOutline, restaurantOutline });
+    addIcons({ homeOutline, calendarOutline, cartOutline, chatbubblesOutline });
   }
 }

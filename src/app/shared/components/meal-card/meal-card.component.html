@@ -11,9 +11,9 @@
       </ion-text>
 
       <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
-        <span class="app-chip">Anti-inf: {{ meal.antiInflammatoryScore }}/5</span>
-        <span class="app-chip">Iron: {{ meal.ironSupport }}/5</span>
-        <span class="app-chip">Fiber: {{ meal.fiberScore }}/5</span>
+        <span [class]="scoreClass(meal.antiInflammatoryScore)">Anti-inf: {{ meal.antiInflammatoryScore }}/5</span>
+        <span [class]="scoreClass(meal.ironSupport)">Iron: {{ meal.ironSupport }}/5</span>
+        <span [class]="scoreClass(meal.fiberScore)">Fiber: {{ meal.fiberScore }}/5</span>
       </div>
     </ion-card-content>
   </div>
